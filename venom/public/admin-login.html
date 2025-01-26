@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Access</title>
+    <style>
+        /* Basit bir stil ekleyelim */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: #0a0a1f;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        form {
+            background: rgba(255,255,255,0.1);
+            padding: 2rem;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            width: 300px;
+        }
+        input {
+            padding: 0.5rem;
+            border-radius: 5px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.05);
+            color: white;
+        }
+        button {
+            padding: 0.5rem;
+            background: #14F195;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <form id="accessForm">
+        <h2>Admin Access</h2>
+        <input type="text" id="accessKey" placeholder="Daily Access Key" required>
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <input type="text" id="twoFactorCode" placeholder="2FA Code" required>
+        <button type="submit">Access Admin Panel</button>
+    </form>
+
+    <script>
+        // Sayfa yüklendiğinde token kontrolü
+        window.addEventListener('load', () => {
+            sessionStorage.removeItem('adminToken');
+            sessionStorage.removeItem('tempToken');
+        });
+
+        document.getElementById('accessForm').onsubmit = async (e) => {
+            e.preventDefault();
+            
+            try {
+                const accessKey = document.getElementById('accessKey').value;
+                const accessResponse = await fetch('/api/admin/access', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ accessKey })
+                });
+
+                if (!accessResponse.ok) {
+                    throw new Error('Invalid access key');
+                }
+
+                const { tempToken } = await accessResponse.json();
+                sessionStorage.setItem('tempToken', tempToken);
+
+                const loginData = {
+                    username: document.getElementById('username').value,
+                    password: document.getElementById('password').value,
+                    twoFactorCode: document.getElementById('twoFactorCode').value
+                };
+
+                const loginResponse = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${tempToken}`
+                    },
+                    body: JSON.stringify(loginData)
+                });
+
+                if (!loginResponse.ok) {
+                    throw new Error('Login failed');
+                }
+
+                const { token } = await loginResponse.json();
+                sessionStorage.setItem('adminToken', token);
+                window.location.href = '/exchangehub';
+
+            } catch (error) {
+                alert(error.message);
+                sessionStorage.removeItem('tempToken');
+                sessionStorage.removeItem('adminToken');
+            }
+        };
+    </script>
+</body>
+</html> 

@@ -1,0 +1,16 @@
+{
+    "url": "https://marsnetwork.vercel.app",
+    "name": "Mars Network",
+    "iconUrl": "https://marsnetwork.vercel.app/images/logo.png",
+    "termsOfUseUrl": "https://marsnetwork.vercel.app/terms",
+    "privacyPolicyUrl": "https://marsnetwork.vercel.app/privacy",
+    
+    "items": [
+        {
+            "name": "Mars Network Dashboard",
+            "description": "Web3 Community Platform",
+            "icon": "https://your-domain.com/images/logo.png",
+            "url": "https://your-domain.com/dashboard"
+        }
+    ]
+} 
