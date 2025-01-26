@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mars Network - Web3 Community Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body>
+    <div class="hero-section">
+        <nav class="navbar">
+            <div class="logo">
+                <img src="images/logo.png" alt="Mars Network">
+            </div>
+            <div class="nav-links">
+                <a href="#about">About</a>
+                <a href="#features">Features</a>
+                <a href="#ecosystem">Ecosystem</a>
+                <a href="#community">Community</a>
+            </div>
+            <button id="connectWallet" class="connect-button">
+                <span class="button-text">Connect Wallet</span>
+                <span class="button-icon">
+                    <i class="fas fa-wallet"></i>
+                </span>
+            </button>
+        </nav>
+
+        <div class="hero-content">
+            <h1>Welcome to Mars Network</h1>
+            <p>The Next Generation Web3 Community Platform</p>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-value">0</span>
+                    <span class="stat-label">Active Users</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">10K$+</span>
+                    <span class="stat-label">Prize Pool</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">5 Sol+</span>
+                    <span class="stat-label">Daily Stake</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="blockchain-animation">
+            <div class="block"></div>
+            <div class="block"></div>
+            <div class="block"></div>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <div id="about" class="section">
+        <div class="section-content">
+            <h2>Our Team</h2>
+            <div class="team-grid">
+                <div class="team-member">
+                    <img src="images/team1.jpg" alt="Team Member">
+                    <h3>John Doe</h3>
+                    <p>CEO & Founder</p>
+                    <p>10+ years in blockchain development</p>
+                </div>
+                <div class="team-member">
+                    <img src="images/team2.jpg" alt="Team Member">
+                    <h3>Jane Smith</h3>
+                    <p>CTO</p>
+                    <p>Former Solana core developer</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div id="features" class="section">
+        <div class="section-content">
+            <h2>Project Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-rocket"></i>
+                    <h3>High Performance</h3>
+                    <p>Built on TON for lightning-fast transactions</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Security</h3>
+                    <p>Advanced security measures to protect assets</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-coins"></i>
+                    <h3>Dual Token System</h3>
+                    <p>Innovative tokenomics with MNT and DUAL tokens</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal içeriğini güncelle -->
+    <div id="walletModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Connect Your Wallet</h2>
+            <div class="wallet-options">
+                <div class="wallet-option" id="phantom">
+                    <img src="images/phantom.png" alt="Phantom">
+                    <span>Phantom Wallet</span>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Modal işlemleri
+        const modal = document.getElementById("walletModal");
+        const connectBtn = document.getElementById("connectWallet");
+        const span = document.getElementsByClassName("close")[0];
+        
+        connectBtn.onclick = function() {
+            modal.style.display = "block";
+        }
+        
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+        
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        // Phantom Wallet bağlantısı
+        document.getElementById('phantom').addEventListener('click', async () => {
+            try {
+                if (typeof window.phantom !== 'undefined') {
+                    const connection = await window.phantom.solana.connect();
+                    const account = connection.publicKey.toString();
+                    localStorage.setItem('walletAddress', account);
+                    localStorage.setItem('walletType', 'phantom');
+                    window.location.href = 'dashboard.html';
+                } else {
+                    window.open('https://phantom.app/', '_blank');
+                }
+            } catch (error) {
+                console.error('Phantom connection failed:', error);
+            }
+        });
+
+        // Animasyonlu bloklar için
+        const blocks = document.querySelectorAll('.block');
+        blocks.forEach((block, index) => {
+            block.style.animationDelay = `${index * 0.2}s`;
+        });
+    </script>
+</body>
+</html> 

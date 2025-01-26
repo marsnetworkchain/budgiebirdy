@@ -1,0 +1,211 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #0a0a1f 0%, #1a1a4f 100%);
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+header {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    margin-bottom: 2rem;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.logo img {
+    height: 40px;
+}
+
+.admin-section {
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.add-points-card {
+    background: rgba(30, 144, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+    border-radius: 20px;
+}
+
+.input-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+input {
+    padding: 0.8rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    flex: 1;
+}
+
+input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+button {
+    padding: 0.8rem 1.5rem;
+    background: #14F195;
+    border: none;
+    border-radius: 10px;
+    color: #000;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(20, 241, 149, 0.3);
+}
+
+.wallets-section {
+    background: rgba(30, 144, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+    border-radius: 20px;
+}
+
+.search-bar {
+    margin-bottom: 1.5rem;
+}
+
+.search-bar input {
+    width: 100%;
+}
+
+.wallet-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.wallet-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    transition: all 0.3s;
+}
+
+.wallet-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.wallet-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.wallet-address {
+    font-family: monospace;
+    color: #14F195;
+}
+
+.wallet-points {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.edit-points {
+    background: #9945FF;
+}
+
+/* Stats card stili ekleyelim */
+.stats-card {
+    display: flex;
+    justify-content: space-around;
+    background: rgba(30, 144, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+    border-radius: 20px;
+    margin-bottom: 2rem;
+}
+
+.stats-card .stat-item {
+    text-align: center;
+}
+
+.stats-card .stat-item h3 {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 0.5rem;
+}
+
+.stats-card .stat-item span {
+    font-size: 2rem;
+    font-weight: bold;
+    background: linear-gradient(45deg, #14F195, #9945FF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Reset button stili */
+.reset-card {
+    background: rgba(255, 59, 48, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 59, 48, 0.2);
+    padding: 2rem;
+    border-radius: 20px;
+}
+
+.reset-button {
+    background: #FF3B30;
+    width: 100%;
+}
+
+.reset-button:hover {
+    background: #FF453A;
+    box-shadow: 0 5px 15px rgba(255, 59, 48, 0.3);
+}
+
+@media (max-width: 768px) {
+    .input-group {
+        flex-direction: column;
+    }
+    
+    .wallet-item {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .stats-card {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+} 
