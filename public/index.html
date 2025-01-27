@@ -9,8 +9,36 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="dashboard.css">
+    
+    <!-- CSS dosyaları -->
+    <link rel="stylesheet" href="https://marsnetworkchain.github.io/budgiebirdy/css/dashboard.css">
+    
     <script src="https://unpkg.com/@tonconnect/ui@1.0.0-beta.6/dist/tonconnect-ui.min.js"></script>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Firebase Yapılandırması -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAjPyrnn8ThDsZ3WQ46fJobcuiB5YoiovA",
+            authDomain: "budgieproject.firebaseapp.com",
+            projectId: "budgieproject",
+            storageBucket: "budgieproject.firebasestorage.app",
+            messagingSenderId: "697212076122",
+            appId: "1:697212076122:web:6b86d154dc9ae5d4521863"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+    </script>
+
+    <!-- Inline CSS -->
+    <style>
+        /* dashboard.css içeriğini buraya yapıştır */
+    </style>
 </head>
 <body>
     <div class="container">
@@ -150,15 +178,6 @@
             }
         }
 
-        // Kullanıcı puanlarını yükle
-        function loadUserPoints() {
-            if (!userInfo) return;
-            
-            const userId = userInfo.id;
-            const points = localStorage.getItem(`telegram_${userId}_points`) || '0';
-            document.getElementById('totalPoints').textContent = points;
-        }
-
         // TON Connect başlatma
         function initializeTONConnect() {
             try {
@@ -196,48 +215,76 @@
                         const questId = questItem.dataset.questId;
                         const questUrl = questItem.dataset.url;
 
-                        // Görevi başlat
-                        window.open(questUrl, '_blank');
-                        button.textContent = 'Completed';
-                        button.classList.add('completed');
-                        button.disabled = true;
+                        try {
+                            // Kullanıcı dokümanını al veya oluştur
+                            const userRef = db.collection('users').doc(userInfo.id.toString());
+                            const userDoc = await userRef.get();
 
-                        // Puanları güncelle - Telegram ID'ye göre
-                        const userId = userInfo.id;
-                        const currentPoints = parseInt(localStorage.getItem(`telegram_${userId}_points`) || '0');
-                        const newPoints = currentPoints + 200;
-                        
-                        // Puanları kaydet
-                        localStorage.setItem(`telegram_${userId}_points`, newPoints.toString());
-                        
-                        // UI'ı güncelle
-                        document.getElementById('totalPoints').textContent = newPoints;
-                        document.getElementById('wallet-points').textContent = newPoints;
+                            let userData = {
+                                points: 0,
+                                completedQuests: [],
+                                wallet: wallet.account.address
+                            };
 
-                        // Görevi tamamlandı olarak işaretle
-                        localStorage.setItem(`telegram_${userId}_quest_${questId}`, 'completed');
+                            if (userDoc.exists) {
+                                userData = userDoc.data();
+                            }
 
-                        // Cüzdan adresini de kaydet
-                        localStorage.setItem(`telegram_${userId}_wallet`, wallet.account.address);
+                            // Görev daha önce tamamlanmamışsa
+                            if (!userData.completedQuests.includes(questId)) {
+                                // Puanları ve tamamlanan görevi ekle
+                                userData.points += 200;
+                                userData.completedQuests.push(questId);
+
+                                // Firebase'i güncelle
+                                await userRef.set(userData, { merge: true });
+
+                                // UI'ı güncelle
+                                button.textContent = 'Completed';
+                                button.classList.add('completed');
+                                button.disabled = true;
+
+                                document.getElementById('totalPoints').textContent = userData.points;
+                                document.getElementById('wallet-points').textContent = userData.points;
+
+                                // Görevi başlat
+                                window.open(questUrl, '_blank');
+                            }
+                        } catch (error) {
+                            console.error('Görev tamamlama hatası:', error);
+                            alert('Bir hata oluştu, lütfen tekrar deneyin.');
+                        }
                     });
                 });
 
                 // Tamamlanan görevleri kontrol et
-                function checkCompletedQuests() {
+                async function checkCompletedQuests() {
                     if (!userInfo) return;
 
-                    const userId = userInfo.id;
-                    document.querySelectorAll('.quest-item').forEach(questItem => {
-                        const questId = questItem.dataset.questId;
-                        const isCompleted = localStorage.getItem(`telegram_${userId}_quest_${questId}`) === 'completed';
+                    try {
+                        const userDoc = await db.collection('users').doc(userInfo.id.toString()).get();
                         
-                        if (isCompleted) {
-                            const button = questItem.querySelector('.quest-button');
-                            button.textContent = 'Completed';
-                            button.classList.add('completed');
-                            button.disabled = true;
+                        if (userDoc.exists) {
+                            const userData = userDoc.data();
+                            
+                            // Puanları göster
+                            document.getElementById('totalPoints').textContent = userData.points || 0;
+                            document.getElementById('wallet-points').textContent = userData.points || 0;
+
+                            // Tamamlanan görevleri işaretle
+                            userData.completedQuests.forEach(questId => {
+                                const questItem = document.querySelector(`.quest-item[data-quest-id="${questId}"]`);
+                                if (questItem) {
+                                    const button = questItem.querySelector('.quest-button');
+                                    button.textContent = 'Completed';
+                                    button.classList.add('completed');
+                                    button.disabled = true;
+                                }
+                            });
                         }
-                    });
+                    } catch (error) {
+                        console.error('Görev kontrolü hatası:', error);
+                    }
                 }
 
                 // Sayfa yüklendiğinde ve cüzdan bağlandığında görevleri kontrol et

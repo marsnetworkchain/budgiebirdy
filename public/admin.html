@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mars Network - Admin Panel</title>
+    <link rel="stylesheet" href="css/admin.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"></script>
+    
+    <!-- Firebase Yapılandırması -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAjPyrnn8ThDsZ3WQ46fJobcuiB5YoiovA",
+            authDomain: "budgieproject.firebaseapp.com",
+            projectId: "budgieproject",
+            storageBucket: "budgieproject.firebasestorage.app",
+            messagingSenderId: "697212076122",
+            appId: "1:697212076122:web:6b86d154dc9ae5d4521863"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+    </script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="images/logo.png" alt="Mars Network">
+            <span>Admin Panel</span>
+        </div>
+    </header>
+
+    <div class="admin-section">
+        <!-- İstatistikler -->
+        <div class="stats-card">
+            <div class="stat-item">
+                <h3>Toplam Kullanıcı</h3>
+                <span id="totalUsers">0</span>
+            </div>
+            <div class="stat-item">
+                <h3>Toplam Puan</h3>
+                <span id="totalPoints">0</span>
+            </div>
+            <div class="stat-item">
+                <h3>Aktif Görevler</h3>
+                <span id="activeQuests">6</span>
+            </div>
+        </div>
+
+        <!-- Kullanıcı Listesi -->
+        <div class="wallets-section">
+            <h2>Kullanıcılar</h2>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Telegram ID veya Cüzdan Adresi ile ara...">
+            </div>
+            <div class="user-list" id="userList">
+                <!-- Kullanıcılar dinamik olarak buraya eklenecek -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Kullanıcı verilerini Firebase'den yükle
+        async function loadUsers() {
+            try {
+                const usersSnapshot = await db.collection('users').get();
+                const users = [];
+
+                usersSnapshot.forEach(doc => {
+                    const userData = doc.data();
+                    users.push({
+                        userId: doc.id,
+                        points: userData.points || 0,
+                        wallet: userData.wallet || 'Cüzdan Bağlanmamış',
+                        completedQuests: userData.completedQuests || []
+                    });
+                });
+
+                // İstatistikleri güncelle
+                document.getElementById('totalUsers').textContent = users.length;
+                const totalPoints = users.reduce((sum, user) => sum + parseInt(user.points), 0);
+                document.getElementById('totalPoints').textContent = totalPoints;
+
+                // Kullanıcı listesini oluştur
+                const userList = document.getElementById('userList');
+                userList.innerHTML = '';
+
+                users.forEach(user => {
+                    const userItem = document.createElement('div');
+                    userItem.className = 'user-item';
+                    userItem.innerHTML = `
+                        <div class="user-info">
+                            <div class="user-id">Telegram ID: ${user.userId}</div>
+                            <div class="user-wallet">${user.wallet}</div>
+                            <div class="user-stats">
+                                <span class="points">Puanlar: ${user.points}</span>
+                                <span class="quests">Tamamlanan Görevler: ${user.completedQuests.length}/6</span>
+                            </div>
+                        </div>
+                    `;
+                    userList.appendChild(userItem);
+                });
+
+                // Gerçek zamanlı güncellemeleri dinle
+                db.collection('users').onSnapshot(snapshot => {
+                    snapshot.docChanges().forEach(change => {
+                        if (change.type === 'modified') {
+                            loadUsers(); // Değişiklik olduğunda listeyi yenile
+                        }
+                    });
+                });
+
+            } catch (error) {
+                console.error('Veri yükleme hatası:', error);
+            }
+        }
+
+        // Arama fonksiyonu
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            document.querySelectorAll('.user-item').forEach(item => {
+                const userId = item.querySelector('.user-id').textContent.toLowerCase();
+                const wallet = item.querySelector('.user-wallet').textContent.toLowerCase();
+                
+                if (userId.includes(searchTerm) || wallet.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // Sayfa yüklendiğinde verileri yükle
+        document.addEventListener('DOMContentLoaded', loadUsers);
+    </script>
+</body>
+</html> 

@@ -1,312 +1,117 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mars Network - Dashboard</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="dashboard.css">
-    <script src="https://unpkg.com/@tonconnect/ui@1.0.0-beta.6/dist/tonconnect-ui.min.js"></script>
-</head>
-<body>
-    <div class="container">
-        <header>
-            <div class="nav-links">
-                <a href="https://twitter.com/marsnwcrypto" target="_blank">
-                    <img src="images/x-icon.png" alt="X" class="x-icon">
-                </a>
-            </div>
-            <div class="logo">
-                <img src="images/logo.png" alt="Mars Network">
-            </div>
-            <div class="season-badge">
-                SEASON 1
-            </div>
-        </header>
-
-        <main>
-            <div class="sections">
-                <section id="home-section" class="active">
-                    <div class="stats-section">
-                        <div class="stat-item">
-                            <h3 id="totalPoints">0</h3>
-                            <p>Total Points</p>
-                        </div>
-                        <button class="how-it-works">How it Works ∧</button>
-                    </div>
-                </section>
-
-                <section id="tasks-section">
-                    <div class="quests-section">
-                        <h2>QUESTS</h2>
-                        <div class="quest-list">
-                            <div class="quest-item" data-quest-id="1" data-url="https://twitter.com/marsnwcrypto">
-                                <span class="quest-number">1</span>
-                                <span class="quest-text">Follow Mars Network on X</span>
-                                <span class="points">200 POINTS</span>
-                                <button class="quest-button">Start</button>
-                            </div>
-                            <div class="quest-item" data-quest-id="2" data-url="https://t.me/marsnetworkchain">
-                                <span class="quest-number">2</span>
-                                <span class="quest-text">Join our Telegram community</span>
-                                <span class="points">200 POINTS</span>
-                                <button class="quest-button">Start</button>
-                            </div>
-                            <div class="quest-item" data-quest-id="3" data-url="https://t.me/airdropempiretr">
-                                <span class="quest-number">3</span>
-                                <span class="quest-text">Join Airdrop Empire Telegram Channel</span>
-                                <span class="points">200 POINTS</span>
-                                <button class="quest-button">Start</button>
-                            </div>
-                            <div class="quest-item" data-quest-id="4" data-url="https://twitter.com/marsnwcrypto/status/1874108158853210180">
-                                <span class="quest-number">4</span>
-                                <span class="quest-text">Like & Retweet Announcement Post</span>
-                                <span class="points">200 POINTS</span>
-                                <button class="quest-button">Start</button>
-                            </div>
-                            <div class="quest-item" data-quest-id="5" data-url="https://twitter.com/marsnwcrypto/status/1874108158853210180">
-                                <span class="quest-number">5</span>
-                                <span class="quest-text">Quote Tweet with #MarsNetwork #Airdrop</span>
-                                <span class="points">200 POINTS</span>
-                                <button class="quest-button">Start</button>
-                            </div>
-                            <div class="quest-item" data-quest-id="6" data-url="https://discord.gg/marsnetwork">
-                                <span class="quest-number">6</span>
-                                <span class="quest-text">Join Discord Community</span>
-                                <span class="points">200 POINTS</span>
-                                <button class="quest-button">Start</button>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="wallet-section">
-                    <div class="wallet-container">
-                        <h2>Cüzdan Bağla</h2>
-                        <div id="wallet-status">
-                            <div id="tonconnect-button"></div>
-                            <div class="wallet-info" style="display: none;">
-                                <p>Adres: <span id="wallet-address"></span></p>
-                                <p>Puanlar: <span id="wallet-points">0</span></p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </div>
-
-            <!-- Navigation Bar -->
-            <nav class="nav-bar">
-                <button class="nav-item active" onclick="showSection('home')">
-                    <i class="fas fa-home"></i>
-                    <span>Home</span>
-                </button>
-                <button class="nav-item" onclick="showSection('tasks')">
-                    <i class="fas fa-tasks"></i>
-                    <span>Tasks</span>
-                </button>
-                <button class="nav-item" onclick="showSection('wallet')">
-                    <i class="fas fa-wallet"></i>
-                    <span>Wallet</span>
-                </button>
-            </nav>
-        </main>
-    </div>
-
-    <div id="popup" class="popup">
-        <div class="popup-content">
-            <span class="close-popup">&times;</span>
-            <h3>Information</h3>
-            <p>Airdrop Checker soon</p>
-        </div>
-    </div>
-
+    <!-- Diğer head içeriği... -->
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"></script>
+    
+    <!-- Firebase Yapılandırması -->
     <script>
-        // Font Awesome'ı ekle
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css';
-        document.head.appendChild(link);
+        const firebaseConfig = {
+            apiKey: "AIzaSyAjPyrnn8ThDsZ3WQ46fJobcuiB5YoiovA",
+            authDomain: "budgieproject.firebaseapp.com",
+            projectId: "budgieproject",
+            storageBucket: "budgieproject.firebasestorage.app",
+            messagingSenderId: "697212076122",
+            appId: "1:697212076122:web:6b86d154dc9ae5d4521863"
+        };
 
-        // Sayfa yükleme ve section kontrolü
-        document.addEventListener('DOMContentLoaded', () => {
-            showSection('home');
-            initializeTONConnect();
-        });
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+    </script>
+</head> 
 
-        function initializeTONConnect() {
+<script>
+    // Quest butonlarına tıklama kontrolü
+    document.querySelectorAll('.quest-button').forEach(button => {
+        button.addEventListener('click', async () => {
+            if (!userInfo) {
+                alert('Telegram hesabınız doğrulanamadı!');
+                return;
+            }
+
+            // Cüzdan bağlantısını kontrol et
+            const wallet = await tonConnectUI.getWalletInfo();
+            if (!wallet) {
+                alert('Lütfen önce cüzdanınızı bağlayın!');
+                showSection('wallet');
+                return;
+            }
+
+            const questItem = button.closest('.quest-item');
+            const questId = questItem.dataset.questId;
+            const questUrl = questItem.dataset.url;
+
             try {
-                // TON Connect başlatma
-                const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-                    manifestUrl: 'https://marsnetworkchain.github.io/budgiebirdy/tonconnect-manifest.json',
-                    buttonRootId: 'tonconnect-button',
-                    uiPreferences: {
-                        theme: 'DARK',
-                        colorsSet: {
-                            connectButton: {
-                                background: '#3772FF',
-                                foreground: '#FFFFFF'
-                            }
-                        }
-                    }
-                });
+                // Kullanıcı dokümanını al veya oluştur
+                const userRef = db.collection('users').doc(userInfo.id.toString());
+                const userDoc = await userRef.get();
 
-                // Cüzdan bağlantısını dinle
-                tonConnectUI.onStatusChange(async (wallet) => {
-                    const walletInfo = document.querySelector('.wallet-info');
-                    const totalPoints = document.getElementById('totalPoints');
-                    
-                    if (wallet) {
-                        // Cüzdan bağlandı
-                        walletInfo.style.display = 'block';
-                        const address = wallet.account.address;
-                        
-                        // Adresi göster
-                        const walletAddress = document.getElementById('wallet-address');
-                        if (walletAddress) {
-                            walletAddress.textContent = `${address.slice(0, 6)}...${address.slice(-4)}`;
-                        }
-                        
-                        // Puanları yükle
-                        const points = localStorage.getItem(`points_${address}`) || '0';
-                        const walletPoints = document.getElementById('wallet-points');
-                        if (walletPoints) {
-                            walletPoints.textContent = points;
-                        }
-                        if (totalPoints) {
-                            totalPoints.textContent = points;
-                        }
-                    } else {
-                        // Cüzdan bağlantısı kesildi
-                        if (walletInfo) {
-                            walletInfo.style.display = 'none';
-                        }
-                        if (totalPoints) {
-                            totalPoints.textContent = '0';
-                        }
-                    }
-                });
+                let userData = {
+                    points: 0,
+                    completedQuests: [],
+                    wallet: wallet.account.address
+                };
 
-                // Quest butonlarına tıklama kontrolü
-                document.querySelectorAll('.quest-button').forEach(button => {
-                    button.addEventListener('click', async () => {
-                        // Cüzdan bağlantısını kontrol et
-                        const wallet = await tonConnectUI.getWalletInfo();
-                        if (!wallet) {
-                            // Cüzdan bağlı değilse uyarı ver
-                            alert('Lütfen önce cüzdanınızı bağlayın!');
-                            showSection('wallet'); // Wallet sekmesine yönlendir
-                            return;
-                        }
+                if (userDoc.exists) {
+                    userData = userDoc.data();
+                }
 
-                        const questItem = button.closest('.quest-item');
-                        const questUrl = questItem.dataset.url;
-                        const questId = questItem.dataset.questId;
+                // Görev daha önce tamamlanmamışsa
+                if (!userData.completedQuests.includes(questId)) {
+                    // Puanları ve tamamlanan görevi ekle
+                    userData.points += 200;
+                    userData.completedQuests.push(questId);
 
-                        // Görevi başlat
-                        window.open(questUrl, '_blank');
+                    // Firebase'i güncelle
+                    await userRef.set(userData, { merge: true });
+
+                    // UI'ı güncelle
+                    button.textContent = 'Completed';
+                    button.classList.add('completed');
+                    button.disabled = true;
+
+                    document.getElementById('totalPoints').textContent = userData.points;
+                    document.getElementById('wallet-points').textContent = userData.points;
+
+                    // Görevi başlat
+                    window.open(questUrl, '_blank');
+                }
+            } catch (error) {
+                console.error('Görev tamamlama hatası:', error);
+                alert('Bir hata oluştu, lütfen tekrar deneyin.');
+            }
+        });
+    });
+
+    // Tamamlanan görevleri kontrol et
+    async function checkCompletedQuests() {
+        if (!userInfo) return;
+
+        try {
+            const userDoc = await db.collection('users').doc(userInfo.id.toString()).get();
+            
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                
+                // Puanları göster
+                document.getElementById('totalPoints').textContent = userData.points || 0;
+                document.getElementById('wallet-points').textContent = userData.points || 0;
+
+                // Tamamlanan görevleri işaretle
+                userData.completedQuests.forEach(questId => {
+                    const questItem = document.querySelector(`.quest-item[data-quest-id="${questId}"]`);
+                    if (questItem) {
+                        const button = questItem.querySelector('.quest-button');
                         button.textContent = 'Completed';
                         button.classList.add('completed');
                         button.disabled = true;
-
-                        // Puanları güncelle
-                        const address = wallet.account.address;
-                        const currentPoints = parseInt(localStorage.getItem(`points_${address}`) || '0');
-                        const newPoints = currentPoints + 200; // Her görev 200 puan
-                        
-                        // Puanları kaydet
-                        localStorage.setItem(`points_${address}`, newPoints.toString());
-                        
-                        // UI'ı güncelle
-                        document.getElementById('totalPoints').textContent = newPoints;
-                        document.getElementById('wallet-points').textContent = newPoints;
-
-                        // Görevi tamamlandı olarak işaretle
-                        localStorage.setItem(`quest_${address}_${questId}`, 'completed');
-                    });
-                });
-
-                // Sayfa yüklendiğinde tamamlanan görevleri kontrol et
-                async function checkCompletedQuests() {
-                    const wallet = await tonConnectUI.getWalletInfo();
-                    if (wallet) {
-                        const address = wallet.account.address;
-                        document.querySelectorAll('.quest-item').forEach(questItem => {
-                            const questId = questItem.dataset.questId;
-                            const isCompleted = localStorage.getItem(`quest_${address}_${questId}`) === 'completed';
-                            
-                            if (isCompleted) {
-                                const button = questItem.querySelector('.quest-button');
-                                button.textContent = 'Completed';
-                                button.classList.add('completed');
-                                button.disabled = true;
-                            }
-                        });
-                    }
-                }
-
-                // Sayfa yüklendiğinde ve cüzdan bağlandığında görevleri kontrol et
-                document.addEventListener('DOMContentLoaded', checkCompletedQuests);
-                tonConnectUI.onStatusChange(async (wallet) => {
-                    if (wallet) {
-                        await checkCompletedQuests();
                     }
                 });
-            } catch (error) {
-                console.error('TON Connect başlatma hatası:', error);
             }
+        } catch (error) {
+            console.error('Görev kontrolü hatası:', error);
         }
-
-        // Section değiştirme fonksiyonu
-        function showSection(sectionName) {
-            // Tüm section'ları gizle
-            document.querySelectorAll('section').forEach(section => {
-                section.style.display = 'none';
-                section.classList.remove('active');
-            });
-
-            // Seçilen section'ı göster
-            const selectedSection = document.getElementById(`${sectionName}-section`);
-            if (selectedSection) {
-                selectedSection.style.display = 'block';
-                setTimeout(() => {
-                    selectedSection.classList.add('active');
-                }, 10);
-            }
-
-            // Navigation butonlarını güncelle
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            const activeButton = document.querySelector(`.nav-item[onclick="showSection('${sectionName}')"]`);
-            if (activeButton) {
-                activeButton.classList.add('active');
-            }
-        }
-
-        // Popup işlemleri
-        const popup = document.getElementById('popup');
-        const howItWorks = document.querySelector('.how-it-works');
-        const closePopup = document.querySelector('.close-popup');
-
-        if (howItWorks && closePopup && popup) {
-            howItWorks.addEventListener('click', () => {
-                popup.style.display = 'block';
-            });
-
-            closePopup.addEventListener('click', () => {
-                popup.style.display = 'none';
-            });
-
-            window.addEventListener('click', (e) => {
-                if (e.target === popup) {
-                    popup.style.display = 'none';
-                }
-            });
-        }
-    </script>
-</body>
-</html> 
+    }
+</script> 
