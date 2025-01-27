@@ -97,11 +97,21 @@ button:hover {
 }
 
 .search-bar {
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
 }
 
 .search-bar input {
     width: 100%;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: white;
+    font-size: 1rem;
+}
+
+.search-bar input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .wallet-list {
@@ -191,6 +201,74 @@ button:hover {
 .reset-button:hover {
     background: #FF453A;
     box-shadow: 0 5px 15px rgba(255, 59, 48, 0.3);
+}
+
+/* Mevcut stillere ekle */
+.user-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.user-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.user-id {
+    font-size: 1.1rem;
+    color: #14F195;
+    font-weight: 600;
+}
+
+.user-wallet {
+    font-family: monospace;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+}
+
+.user-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+}
+
+.points {
+    color: #14F195;
+    font-weight: 500;
+}
+
+.quests {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.user-list {
+    max-height: 600px;
+    overflow-y: auto;
+    padding-right: 1rem;
+}
+
+.user-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.user-list::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+}
+
+.user-list::-webkit-scrollbar-thumb {
+    background: rgba(20, 241, 149, 0.3);
+    border-radius: 3px;
 }
 
 @media (max-width: 768px) {

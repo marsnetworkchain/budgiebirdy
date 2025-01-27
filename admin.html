@@ -1,29 +1,117 @@
-<script>
-    // Sayfa yüklendiğinde token kontrolü
-    window.addEventListener('load', async () => {
-        const token = sessionStorage.getItem('adminToken');
-        
-        if (!token) {
-            window.location.href = '/admin-login.html';
-            return;
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mars Network - Admin Panel</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="images/logo.png" alt="Mars Network">
+            <span>Admin Panel</span>
+        </div>
+    </header>
+
+    <div class="admin-section">
+        <!-- İstatistikler -->
+        <div class="stats-card">
+            <div class="stat-item">
+                <h3>Toplam Kullanıcı</h3>
+                <span id="totalUsers">0</span>
+            </div>
+            <div class="stat-item">
+                <h3>Toplam Puan</h3>
+                <span id="totalPoints">0</span>
+            </div>
+            <div class="stat-item">
+                <h3>Aktif Görevler</h3>
+                <span id="activeQuests">6</span>
+            </div>
+        </div>
+
+        <!-- Kullanıcı Listesi -->
+        <div class="wallets-section">
+            <h2>Kullanıcılar</h2>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Telegram ID veya Cüzdan Adresi ile ara...">
+            </div>
+            <div class="user-list" id="userList">
+                <!-- Kullanıcılar dinamik olarak buraya eklenecek -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Kullanıcı verilerini yükle
+        function loadUsers() {
+            const users = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('telegram_') && key.endsWith('_points')) {
+                    const userId = key.split('_')[1];
+                    const points = localStorage.getItem(key);
+                    const wallet = localStorage.getItem(`telegram_${userId}_wallet`) || 'Cüzdan Bağlanmamış';
+                    
+                    // Tamamlanan görevleri say
+                    let completedQuests = 0;
+                    for (let j = 1; j <= 6; j++) {
+                        if (localStorage.getItem(`telegram_${userId}_quest_${j}`) === 'completed') {
+                            completedQuests++;
+                        }
+                    }
+
+                    users.push({
+                        userId,
+                        points,
+                        wallet,
+                        completedQuests
+                    });
+                }
+            }
+
+            // İstatistikleri güncelle
+            document.getElementById('totalUsers').textContent = users.length;
+            const totalPoints = users.reduce((sum, user) => sum + parseInt(user.points), 0);
+            document.getElementById('totalPoints').textContent = totalPoints;
+
+            // Kullanıcı listesini oluştur
+            const userList = document.getElementById('userList');
+            userList.innerHTML = '';
+
+            users.forEach(user => {
+                const userItem = document.createElement('div');
+                userItem.className = 'user-item';
+                userItem.innerHTML = `
+                    <div class="user-info">
+                        <div class="user-id">Telegram ID: ${user.userId}</div>
+                        <div class="user-wallet">${user.wallet}</div>
+                        <div class="user-stats">
+                            <span class="points">Puanlar: ${user.points}</span>
+                            <span class="quests">Tamamlanan Görevler: ${user.completedQuests}/6</span>
+                        </div>
+                    </div>
+                `;
+                userList.appendChild(userItem);
+            });
         }
 
-        try {
-            // Token kontrolü
-            const response = await fetch('/api/admin/verify', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
+        // Arama fonksiyonu
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            document.querySelectorAll('.user-item').forEach(item => {
+                const userId = item.querySelector('.user-id').textContent.toLowerCase();
+                const wallet = item.querySelector('.user-wallet').textContent.toLowerCase();
+                
+                if (userId.includes(searchTerm) || wallet.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
                 }
             });
+        });
 
-            if (!response.ok) {
-                throw new Error('Invalid token');
-            }
-        } catch (error) {
-            console.error('Auth error:', error);
-            window.location.href = '/admin-login.html';
-        }
-    });
-
-    // Diğer script kodları...
-</script> 
+        // Sayfa yüklendiğinde verileri yükle
+        document.addEventListener('DOMContentLoaded', loadUsers);
+    </script>
+</body>
+</html> 
